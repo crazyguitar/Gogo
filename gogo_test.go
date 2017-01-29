@@ -1,9 +1,10 @@
-package main
+package gogo
 
 import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"sort"
 )
 
 type Func func()
@@ -13,7 +14,7 @@ func GetFunName(i interface{}) string {
 }
 
 // An example about array operations
-func Arr() {
+func ExampleArr() {
 	// Array
 	var arr = [5]int{183, 9572, 5566, 9487, 7788}
 	fmt.Printf("arr = %v\n", arr)
@@ -21,10 +22,16 @@ func Arr() {
 	fmt.Printf("arr[1:3] = %v\n", arr[1:2])
 	fmt.Printf("arr[2:] = %v\n", arr[2:])
 	fmt.Printf("arr[:3] = %v\n", arr[:3])
+	// Output:
+	// arr = [183 9572 5566 9487 7788]
+	// arr[:] = [183 9572 5566 9487 7788]
+	// arr[1:3] = [9572]
+	// arr[2:] = [5566 9487 7788]
+	// arr[:3] = [183 9572 5566]
 }
 
 // An example about slice operations
-func Slice() {
+func ExampleSlice() {
 	// declare a slice
 	var s []int
 	s = make([]int, 3, 3)
@@ -41,10 +48,18 @@ func Slice() {
 	for i, v := range ss {
 		fmt.Printf("ss[%d] = %d\n", i, v)
 	}
+	// Output:
+	// s[0] = 9527
+	// s[1] = 5566
+	// s[2] = 9487
+	// ss[0] = 9527
+	// ss[1] = 5566
+	// ss[2] = 9487
+
 }
 
 // An example about map operations
-func Map() {
+func ExampleMap() {
 
 	// declare a map
 	var m map[string]string
@@ -55,25 +70,17 @@ func Map() {
 	m["FOO"] = "foo"
 	m["BAR"] = "bar"
 	m["BAZ"] = "baz"
-	for k, v := range m {
-		fmt.Printf("m[%s] = %s\n", k, v)
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
 	}
-}
-
-// Main function
-func main() {
-	var funcMap map[string]Func
-
-	funcMap = make(map[string]Func)
-
-	// add functions to map
-	funcMap[GetFunName(Arr)] = Arr
-	funcMap[GetFunName(Map)] = Map
-	funcMap[GetFunName(Slice)] = Slice
-
-	for k, v := range funcMap {
-		fmt.Printf("---> Example: %s\n\n", k)
-		v()
-		fmt.Printf("\n")
+	// sort strings
+	sort.Strings(keys)
+	for _, k := range keys {
+		fmt.Printf("m[%s] = %s\n", k, m[k])
 	}
+	// Output:
+	// m[BAR] = bar
+	// m[BAZ] = baz
+	// m[FOO] = foo
 }
