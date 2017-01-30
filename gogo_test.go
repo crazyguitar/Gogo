@@ -2,6 +2,7 @@ package gogo
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"runtime"
 	"sort"
@@ -55,7 +56,6 @@ func ExampleSlice() {
 	// ss[0] = 9527
 	// ss[1] = 5566
 	// ss[2] = 9487
-
 }
 
 // An example about map operations
@@ -83,4 +83,158 @@ func ExampleMap() {
 	// m[BAR] = bar
 	// m[BAZ] = baz
 	// m[FOO] = foo
+}
+
+// An example about "defer"
+func ExampleDefer() {
+
+	var fileName string = "README.md"
+
+	file, err := os.Open(fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	// finally, we need to close file
+	defer func() {
+		fmt.Printf("Close file\n")
+		err := file.Close()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("Close done\n")
+	}()
+
+	fmt.Printf("Open file: '%s' success\n", fileName)
+	// Output:
+	// Open file: 'README.md' success
+	// Close file
+	// Close done
+}
+
+// An example about function in Go
+func ExampleFuncPtr() {
+	// declare a function pointer
+	var fPtr func(string) string
+
+	// assign a function to fPtr
+	fPtr = func(str string) string {
+		return str
+	}
+
+	ret := fPtr("Hello Go!")
+	fmt.Println(ret)
+	// Output:
+	// Hello Go!
+}
+
+// An example about function collection
+func ExampleFuncCollection() {
+
+	// Using map
+	m := make(map[string]func())
+	m["func1"] = func() {
+		fmt.Println("Run func1")
+	}
+	m["func2"] = func() {
+		fmt.Println("Run func2")
+	}
+	m["func1"]()
+	m["func2"]()
+
+	// using slice
+	var s []func()
+	s = append(s, func() {
+		fmt.Println("Run Foo")
+	})
+	s = append(s, func() {
+		fmt.Println("Run Bar")
+	})
+	for _, f := range s {
+		f()
+	}
+	// Output:
+	// Run func1
+	// Run func2
+	// Run Foo
+	// Run Bar
+}
+
+func Done(str string) {
+	fmt.Printf("'%s' Done\n", str)
+}
+
+// An example about callback function
+func ExampleCallback() {
+	// declare a function ptr
+	var fPtr func(func(string))
+
+	fPtr = func(callback func(string)) {
+		callback("fPtr")
+	}
+
+	fPtr(Done)
+	// Output:
+	// 'fPtr' Done
+}
+
+type person struct {
+	name string
+	age  int
+}
+
+type coder struct {
+	person
+	skills []string
+}
+
+// An example about struct
+func ExampleStruct() {
+
+	// new a coder ptr
+	geek := new(coder)
+	geek.name = "golang"
+	geek.age = 10
+	geek.skills = append(geek.skills, "Go")
+	geek.skills = append(geek.skills, "C")
+	geek.skills = append(geek.skills, "Python")
+
+	fmt.Printf("I'm \"%s\"\n", geek.name)
+	for _, skill := range geek.skills {
+		fmt.Printf("---> I have skill: '%s'\n", skill)
+	}
+
+	// anonymous struct
+	var hacker struct {
+		info   coder
+		arrest bool
+	}
+	hacker.info.name = "anonymous"
+	hacker.info.age = -1
+	hacker.info.skills = append(hacker.info.skills, "unknown")
+	hacker.arrest = false
+
+	fmt.Printf("Hacker: \"%s\"\n", hacker.info.name)
+	fmt.Println("Arrest: ", hacker.arrest)
+
+	// anonymous struct template data
+	data := struct {
+		company string
+		title   string
+	}{
+		"anonymous group",
+		"Hacker & Geek",
+	}
+	fmt.Printf("Work company: \"%s\"\n", data.company)
+	fmt.Printf("Job title: \"%s\"\n", data.title)
+
+	// Output:
+	// I'm "golang"
+	// ---> I have skill: 'Go'
+	// ---> I have skill: 'C'
+	// ---> I have skill: 'Python'
+	// Hacker: "anonymous"
+	// Arrest:  false
+	// Work company: "anonymous group"
+	// Job title: "Hacker & Geek"
 }
