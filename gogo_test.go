@@ -238,3 +238,41 @@ func ExampleStruct() {
 	// Work company: "anonymous group"
 	// Job title: "Hacker & Geek"
 }
+
+func Fib(n int, c chan int) {
+	a, b := 0, 1
+	for i := 0; i < n; i++ {
+		a, b = b, a+b
+	}
+	c <- a
+}
+
+// An example about goroutine
+func ExampleGoroutine() {
+	var out []int
+
+	// create a channel
+	c := make(chan int)
+
+	// calculate Fib numbers
+	in := []int{30, 20, 35, 10, 50}
+	for _, i := range in {
+		go Fib(i, c)
+	}
+	// retrive Fib results
+	for i := 0; i < len(in); i++ {
+		out = append(out, <-c)
+	}
+
+	// print results
+	sort.Ints(out)
+	for _, v := range out {
+		fmt.Println(v)
+	}
+	// Output:
+	// 55
+	// 6765
+	// 832040
+	// 9227465
+	// 12586269025
+}
