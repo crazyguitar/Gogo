@@ -112,6 +112,30 @@ func ExampleDefer() {
 	// Close done
 }
 
+func PrintIntSlice(a ...int) {
+	str := fmt.Sprintln(a)
+	fmt.Print(str)
+}
+
+func PrintArbitraryArgs(v ...interface{}) {
+	str := fmt.Sprintln(v...)
+	fmt.Print(str)
+}
+
+// An example about arbitrary number of parameters
+//
+// ref: https://golang.org/doc/effective_go.html#printing
+//
+func ExampleArbitraryNumArgs() {
+	s := []int{9487, 9527, 5566}
+
+	PrintIntSlice(s...)
+	PrintArbitraryArgs("Hello ", "Go!", s)
+	// Output:
+	// [9487 9527 5566]
+	// Hello  Go! [9487 9527 5566]
+}
+
 // An example about function in Go
 func ExampleFuncPtr() {
 	// declare a function pointer
