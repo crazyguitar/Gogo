@@ -239,6 +239,62 @@ func ExampleStruct() {
 	// Job title: "Hacker & Geek"
 }
 
+type Geek struct {
+	name   string
+	skills []string
+}
+
+type Hacker struct {
+	Geek
+	arrest bool
+}
+
+func (g *Geek) LearnSkill(skill string) {
+	geek := *g
+	geek.skills = append(geek.skills, skill)
+	*g = geek
+}
+
+func (h *Hacker) LearnSkill(skill string) {
+	hacker := *h
+	if hacker.arrest {
+		return
+	}
+	hacker.skills = append(hacker.skills, skill)
+	*h = hacker
+}
+
+// An example about method
+func ExampleGoMethod() {
+	geek := Geek{name: "GoGeek", skills: []string{"C", "C++"}}
+	hacker := Hacker{
+		Geek:   Geek{name: "GoHacker", skills: []string{"C", "Go"}},
+		arrest: false}
+
+	// Geek learn the skills
+	geek.LearnSkill("Python")
+
+	// hacker learn the skills
+	hacker.LearnSkill("Javascripts")
+	hacker.arrest = true // under arrest
+	hacker.LearnSkill("Python")
+
+	// show the skills
+	for _, skill := range geek.skills {
+		fmt.Printf("Geek have skill: %s\n", skill)
+	}
+	for _, skill := range hacker.skills {
+		fmt.Printf("Hacker have skill: %s\n", skill)
+	}
+	// Output:
+	// Geek have skill: C
+	// Geek have skill: C++
+	// Geek have skill: Python
+	// Hacker have skill: C
+	// Hacker have skill: Go
+	// Hacker have skill: Javascripts
+}
+
 func Fib(n int, c chan int) {
 	a, b := 0, 1
 	for i := 0; i < n; i++ {
