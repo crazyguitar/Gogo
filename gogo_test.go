@@ -2,17 +2,18 @@ package gogo
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"reflect"
 	"runtime"
 	"sort"
 )
 
-type Func func()
-
 func GetFunName(i interface{}) string {
 	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 }
+
+const README = "README.md"
 
 // An example about array operations
 func ExampleArr() {
@@ -88,7 +89,7 @@ func ExampleMap() {
 // An example about "defer"
 func ExampleDefer() {
 
-	var fileName string = "README.md"
+	var fileName string = README
 
 	file, err := os.Open(fileName)
 	if err != nil {
@@ -150,6 +151,32 @@ func ExampleFuncPtr() {
 	fmt.Println(ret)
 	// Output:
 	// Hello Go!
+}
+
+// An example about using ioutil read a file
+//
+// ref: http://stackoverflow.com/q/1821811
+//
+func ExampleReadFile() {
+
+	// check README file exists
+	_, err := os.Stat(README)
+	if err == nil {
+	} else if os.IsNotExist(err) {
+		fmt.Printf("Please Create a '%s'\n", README)
+		panic(err)
+	} else {
+		panic(err)
+	}
+
+	// read README file content
+	c, err := ioutil.ReadFile(README)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print(len(c) != 0)
+	// Output:
+	// true
 }
 
 // An example about function collection
