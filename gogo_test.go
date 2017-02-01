@@ -383,3 +383,96 @@ func ExampleGoroutine() {
 	// 9227465
 	// 12586269025
 }
+
+type DuckProto struct {
+	age     int
+	friends []string
+}
+
+type DonaldDuck struct {
+	DuckProto
+	family []string
+}
+
+type DaffyDuck struct {
+	DuckProto
+	species string
+}
+
+type Duck interface {
+	walk()
+	swim()
+	talk()
+}
+
+func (d DonaldDuck) walk() {
+	fmt.Println("Donald Duck walking...")
+}
+
+func (d DonaldDuck) swim() {
+	fmt.Println("Donald Duck swimming...")
+}
+
+func (d DonaldDuck) talk() {
+	fmt.Println("I'm Donald Duck.")
+	fmt.Println("I'm ", d.age)
+	fmt.Println("My friends: ", d.friends)
+	fmt.Println("My family: ", d.family)
+}
+
+func (d DaffyDuck) walk() {
+	fmt.Println("Daffy Duck walking...")
+}
+
+func (d DaffyDuck) swim() {
+	fmt.Println("Daffy Duck swimming...")
+}
+
+func (d DaffyDuck) talk() {
+	fmt.Println("I'm Daffy Duck.")
+	fmt.Println("I'm ", d.age)
+	fmt.Println("My species: ", d.species)
+	fmt.Println("My friends: ", d.friends)
+}
+
+// An example about duck typing
+func ExampleDuckType() {
+	var duck Duck
+
+	donald := DonaldDuck{
+		DuckProto{age: 83, friends: []string{"Mickey", "Minnie", "Goofy"}},
+		[]string{"McDuck", "Huey", "Dewey", "Louie"}}
+
+	daffy := DaffyDuck{
+		DuckProto{age: 80, friends: []string{"Bunny", "Porky"}},
+		"American black duck"}
+
+	// donald satisifid duck type
+	duck = donald
+	duck.walk()
+	duck.swim()
+	duck.talk()
+
+	fmt.Println("---")
+
+	// daffy satisifid duck type
+	duck = daffy
+	duck.walk()
+	duck.swim()
+	duck.talk()
+
+	// Output:
+	// Donald Duck walking...
+	// Donald Duck swimming...
+	// I'm Donald Duck.
+	// I'm  83
+	// My friends:  [Mickey Minnie Goofy]
+	// My family:  [McDuck Huey Dewey Louie]
+	// ---
+	// Daffy Duck walking...
+	// Daffy Duck swimming...
+	// I'm Daffy Duck.
+	// I'm  80
+	// My species:  American black duck
+	// My friends:  [Bunny Porky]
+}
