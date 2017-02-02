@@ -3,14 +3,16 @@ package gogo
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
-	"reflect"
 	"runtime"
 	"sort"
+	"time"
 )
 
-func GetFunName(i interface{}) string {
-	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+func FuncName() string {
+	pc, _, _, _ := runtime.Caller(1)
+	return runtime.FuncForPC(pc).Name()
 }
 
 const README = "README.md"
@@ -111,6 +113,28 @@ func ExampleDefer() {
 	// Open file: 'README.md' success
 	// Close file
 	// Close done
+}
+
+// A Timer
+func StartTimer() func() {
+	// get function names
+	f := FuncName()
+
+	t := time.Now()
+	log.Println(f, "started")
+	return func() {
+		d := time.Now().Sub(t)
+		log.Println(f, "took", d)
+	}
+}
+
+// An example about timeing
+func ExampleTimer() {
+	stop := StartTimer()
+	defer stop()
+
+	time.Sleep(1 * time.Second)
+	// Output:
 }
 
 func PrintIntSlice(a ...int) {
